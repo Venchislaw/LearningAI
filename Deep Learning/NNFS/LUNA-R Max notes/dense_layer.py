@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import nnfs
 from nnfs.datasets import spiral_data
+from activations_funcs import ReLU
 
 
 class Dense:
@@ -19,4 +20,5 @@ class Dense:
 
 X, y = spiral_data(samples=100, classes=2)
 z = Dense(2, 5).forward(X)
-print(z[:5], z.shape)
+print("Linear Activation Function: ", z[:5], z.shape)
+print("ReLU activation function: ", ReLU().output(z)[:5])
