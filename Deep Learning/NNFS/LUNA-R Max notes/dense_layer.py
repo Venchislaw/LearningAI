@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import nnfs
 from nnfs.datasets import spiral_data
 from activations_funcs import ReLU, Softmax
+from losses import CategoricalCrossentropy
 
 
 class Dense:
@@ -18,6 +19,7 @@ class Dense:
 
 
 X, y = spiral_data(samples=100, classes=3)
+
 dense1 = Dense(2, 3)
 activation1 = ReLU()
 dense2 = Dense(3, 3)
@@ -28,4 +30,6 @@ activation1.forward(dense1.z)
 dense2.forward(activation1.a)
 activation2.forward(dense2.z)
 
-print(activation2.a)
+
+loss = CategoricalCrossentropy()
+print(loss.calculate(y, activation2.a))

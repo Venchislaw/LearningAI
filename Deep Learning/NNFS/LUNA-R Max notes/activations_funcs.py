@@ -10,5 +10,3 @@ class Softmax:
     def forward(self, z):
         exponentials = np.exp(z - np.max(z, axis=1, keepdims=True))
         self.a = exponentials / np.sum(exponentials, axis=1, keepdims=True)
-    
-print(Softmax().forward([[1, 2, 3]]))
