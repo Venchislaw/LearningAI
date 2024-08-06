@@ -1,21 +1,24 @@
 This is a digital Note taken in Obsidian md format to show step by step Neural Network implementation from scratch, including all math needed, different techniques and code.
 **Plan:**
 - What is Neural Network
-- Math of Neural Network
+- Forward Prop
+- Let's build...
+- Backward Prop
 - Improvement Techniques
 - Vectorization
 - Python Code
 - Conclusion
 
 Author:<br>
-<img src="https://avatars.githubusercontent.com/u/171679851?v=4" width=30%>
+<img src="https://avatars.githubusercontent.com/u/171679851?v=4" width=30% style="border-radius:50%;">
+
 Venchislaw - [Github](https://github.com/Venchislaw)
 MIT License
 
 ---
 ## What is Neural Network
 
-Neural network is first of all - mathematical abstraction. It's a complex crazy function that takes inputs, and produces outputs through crazy computations chain. Word math may be confusing here, because a lot of people hate math and prefer not touching it. However math is that what makes neural networks as complex as they are simple.
+Neural network is first of all - mathematical abstraction. It's a complex crazy function that takes inputs, and produces outputs through crazy computations chain. Word "math" may be confusing here, because a lot of people hate math and prefer not touching it. However math is that what makes neural networks as complex as they are simple.
 Neural Network probably has nothing to do with our Human brain. Neurons in our brain work much harder than artificial neuron. What makes this name is an associaton with biological brain.
 
 Biological neuron takes some inputs from other neurons and produces some outputs, that are passed to other neurons as inputs. It all forms kind of Network.
@@ -71,14 +74,18 @@ Where:
 $y$ - output
 $w$ - slope
 $x$ - input
-$b$ - y-intersect
+$b$ - y-intercept
 
 Graph of such function looks like this:
 
 <img src="https://cdn-academy.pressidium.com/academy/wp-content/uploads/2021/12/key-features-of-linear-function-graphs-2.png" width =30%>
 
-Now let's look at our neural network:<br>
-<img src="https://res.cloudinary.com/practicaldev/image/fetch/s--2UPg0Z-6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://imgur.com/KeIJEYy.jpeg" width=30%>
+Now let's look at our neural network:
+(this is only 1 type of neural nets known as Multi Layer Perceptron)
+<br>
+
+<img src="https://res.cloudinary.com/practicaldev/image/fetch/s--2UPg0Z-6--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://imgur.com/KeIJEYy.jpeg" width=30%><br>
+
 It consists of *circles*. Those circles are **neurons**
 Each neuron does this linear computation on inputs passed to it:
 
@@ -89,19 +96,21 @@ $$\hat y = w_0x + w_1y + w_2z + b$$
 It's absolutely the same, but with more dimensions.
 Btw this particular image is shitty, as inputs are denoted as $x$, $y$ and $z$
 I'll use the following notation:
-$x$ - input
-$y$ - output
+$x_i$ - input
+$y_i$ - output
 
-And we basically learn all these parameters:
+Parameters in this case are:
 $w_0$ $w_1$ $w_2$ $b$
 
 But it's not enough...
 In forward pass this calculation: 
 $$w_0x_0 + w_1x_1 + w_2x_2 + b$$
 Is denoted with $z$ letter. Because we need to *activate* our neuron.
+And also because $\hat y$ is used to denote final Neural Net output.
 So far we know that neural network consists of simple neurons (in this case they are linear units). But linear functions stacked together form ... Linear function.
+It's bad because it doesn't worth it. It's just a complex linear function.
 In order to fix it we have many cool math functions to make our outputs $z$ non-linear.
-It's done to form shapes of input data for good fit.
+It's done to fit input data well.
 These neurons stacked together vertically construct *layers* that are colored and denoted on image.
 
 ### Activation Functions
@@ -109,9 +118,9 @@ These neurons stacked together vertically construct *layers* that are colored an
 **ReLU**
 
 This activation function is the most common because of its simplicity mixed with efficiency.
-This function is called Rectified Linear Unit because it's nearly linear:
+This function is called Rectified Linear Unit because it's nearly linear:<br>
 <img src="https://media.licdn.com/dms/image/D4D12AQEDy0qH_OQgjg/article-cover_image-shrink_600_2000/0/1658772158369?e=2147483647&v=beta&t=IepDZxgXRKJzHXGZQTwAIcUno5CUOeDQzygPk19yRBA" width=50%>
-Or simply
+<br>Or simply<br>
 $$\begin{cases} 
       z & z\gt 0 \\
       0 & z\leq 0
@@ -120,9 +129,9 @@ $$
 
 **Sigmoid**
 
-This activation function is great for *binary classification problems* where we classify sample as positive\negative, cat\dog, car\plane etc. However this function is commonly applied only to output layers.
+This activation function is great for *binary classification problems* where we classify sample as positive\negative, cat\dog, car\plane etc. However this function is commonly applied only to output layers.<br>
 <img src="https://raw.githubusercontent.com/Codecademy/docs/main/media/sigmoid-function.png" width=50%>
-
+<br>
 Formula is trickier:
 $$1 \over {1 + e^{-z}}$$
 Where $z$ is our calculated z.
@@ -130,8 +139,103 @@ It's also known for *probabilistic output* i.e function returns value from 0 to 
 
 **Tanh**
 
-Similar to sigmoid (actually it's just a shifted sigmoid)
+Similar to sigmoid (actually it's just a shifted sigmoid)<br>
 
-<img src="https://images.squarespace-cdn.com/content/v1/5acbdd3a25bf024c12f4c8b4/1524687495762-MQLVJGP4I57NT34XXTF4/TanhFunction.jpg" width=50%>
+<img src="https://images.squarespace-cdn.com/content/v1/5acbdd3a25bf024c12f4c8b4/1524687495762-MQLVJGP4I57NT34XXTF4/TanhFunction.jpg" width=50%><br>
+
 $$e^z - e^{-z} \over {e^z + e^{-z}}$$
-tanh is much better for *hidden layers* (layers between input layer and output layer)
+tanh is much better for *hidden layers* (layers between input layer and output layer) in comparison to sigmoid, but still worse than relu.
+
+## Putting it all together
+Okay, now let's discuss our forward propagation on professional level!
+We already know that we do the following computations:
+$$z = w_0x_0 + w_1x_1 + ... + w_nx_n + b$$
+where n - number of features passed as input
+$$a = g(z)$$
+$a$ - activated z output
+$g$ - activation function
+
+And we do it on some layer $L$ , so let's add notation:
+$$z^{[L]} = w_0^{[L]}x_0^{[L]} + w_1^{[L]}x_1^{[L]} + ... + w_n^{[L]}x_n^{[L]} + b^{[L]}$$
+
+$$a^{[L]} = g^{[L]}(z^{[L]})$$
+Attentive reader may take a note:
+On layer $L+1$ we'll use output $a$ of layer $L$
+So our formula will change a little:
+$$z^{[L+1]} = w_0^{[L+1]}a_0^{[L]} + w_1^{[L+1]}a_1^{[L]} + ... + w_n^{[L+1]}a_n^{[L]} + b^{[L+1]}$$
+And so on...
+But it's time consuming to write this equation in such form.
+Thankfully there is math!
+We can stack our weights and inputs as vectors (for 1 neuron they are vector*, but for layer it's matrix*)
+And we'll have a *dot product*!
+
+$$z = wx + b$$
+BAM!!!
+Easier!
+
+Now let's put it all together to form a calculation for layer!
+
+$$\begin{bmatrix}  
+w_{1_1} & w_{2_1} & w_{3_1}\\  
+w_{1_2} & w_{2_2} & w_{3_2}\\
+w_{nn_x} & w_{nn_x} & w_{nn_x}
+\end{bmatrix}$$
+
+$$\begin{bmatrix}  
+b_{1}\\  
+b_{2}\\
+b_{n}
+\end{bmatrix}$$
+and our input is also a matrix.
+$$X^T = \begin{bmatrix}  
+x_{1_1} & w_{2_1} & w_{m_1}\\  
+w_{1_2} & w_{2_2} & w_{m_2}\\
+w_{1_n} & w_{2_n} & w_{m_n}
+\end{bmatrix}$$
+Note: Matrix is transposed, meaning it's not convenient form of dataset where each row represents a sample and each column a feature. It's rotated, so Each column is a sample with row features.
+We did it because of dimensions that i didn't mention.
+
+Dot product works only when "neighboring" inner dimensions are equal:
+$(545, 5) (5, 348)$ etc.
+Result of dot product of shapes is a shape of "outer" dimensions:
+$(545, 348)$
+
+**Is math still being complex to you?**
+<br>
+<img src="https://pbs.twimg.com/media/Fr_gyvQX0AAJHVO.jpg" width=20%>
+<br>
+
+
+Resulting computation:
+$$A^{[L]} = g(WX^T+b)$$
+
+We do it for each layer and pass output $A^{[L]}$ as input to the layer $A^{[L+1]}$
+
+*  Layer and matrix are concepts from Linear Algebra that are out of bound of this material, but loosely speaking here's python representation
+```python
+vector = [1, 2, 3]  # array
+
+# array of arrays
+matrix = [[1, 2, 3],
+		  [4, 5, 6],
+		  [7, 8, 9]]
+		  
+```
+
+If you have any questions after this part:<br>
+- [3Blue1Brown Linear Algebra](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
+- [Forward Propagation](https://www.youtube.com/watch?v=a8i2eJin0lY)
+
+### Goal
+
+Let's set some goal to build it here.
+Let's build a simple neural network for iris classification by numerical features.
+<br>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Iris_%28plant%29.jpg/800px-Iris_%28plant%29.jpg" width=30%>
+<br>
+[Dataset Link](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html)
+
+Our neural Network architecture:<br>
+<img src="https://i.ibb.co/yFYB3JD/Screenshot-from-2024-08-06-17-36-03.png" width=50%><br>
+It's just random architecture, but anyways...
+It's simple, but it's enough for our educational purposes
