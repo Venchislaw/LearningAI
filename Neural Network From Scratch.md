@@ -146,6 +146,22 @@ Similar to sigmoid (actually it's just a shifted sigmoid)<br>
 $$e^z - e^{-z} \over {e^z + e^{-z}}$$
 tanh is much better for *hidden layers* (layers between input layer and output layer) in comparison to sigmoid, but still worse than relu.
 
+
+**Softmax**
+
+Hero of the day! Okay, this one is really interesting as it introduces Multi-class classification.
+Sigmoid works only for binary classification, where we have 2 classes. Here it's different
+
+<img src="https://www.researchgate.net/publication/348703101/figure/fig5/AS:983057658040324@1611390618742/Graphic-representation-of-the-softmax-activation-function.ppm" width=50%><br>
+This one is also considered to be a **general case of sigmoid**
+Formula here is pretty simple:
+
+$$e^{z^{[L]}} \over \sum^{n_x}_{i=1}e^{z^{[L]}_i}$$
+It consists of 2 simple steps:
+1) Exponentiate
+2) Normalize (such that all categories sum up to 1)
+Output here is also a probability where $\hat y[i]$ = probability of getting $i$ class.
+
 ## Putting it all together
 Okay, now let's discuss our forward propagation on professional level!
 We already know that we do the following computations:
