@@ -162,6 +162,14 @@ It consists of 2 simple steps:
 2) Normalize (such that all categories sum up to 1)
 Output here is also a probability where $\hat y[i]$ = probability of getting $i$ class.
 
+Note: Our original input data $y$ is presented in form of **hardmax**:
+$$y = \begin{bmatrix}  
+0\\  
+1\\
+0
+\end{bmatrix}$$
+Onehot-encoded data where instead of label to be $y=1$ we have a vector, where 1st element (count from 0) is equal to 1.
+
 ## Putting it all together
 Okay, now let's discuss our forward propagation on professional level!
 We already know that we do the following computations:
@@ -252,6 +260,81 @@ Let's build a simple neural network for iris classification by numerical feature
 [Dataset Link](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html)
 
 Our neural Network architecture:<br>
-<img src="https://i.ibb.co/yFYB3JD/Screenshot-from-2024-08-06-17-36-03.png" width=50%><br>
+<img src="https://i.ibb.co/nPwvMPw/Screenshot-from-2024-08-07-15-11-27.png" width=50%><br>
 It's just random architecture, but anyways...
 It's simple, but it's enough for our educational purposes
+
+We have multi-class classification problem. So as mentioned earlier we will use **softmax**.
+As activations between layers we'll use ReLU
+Okay, we have *architecture* and *activation functions*
+We're ready!
+Or are we?
+
+In example with dish I mentioned feedback.
+Same here. We need to know how precise our model is.
+<br><img src="https://images.hindustantimes.com/img/2024/08/01/1600x900/turkish_shooter_memes__1722511027152_1722511027296.jpeg" width=30%><br>
+
+## Loss Function (and cost function)
+
+Loss function is our "feedback". It outputs small value if we're precise and big value when we're not.
+Input of Loss Function is a pair of predicted value and expected value:
+
+$$L(\hat y, y)$$
+There are many different loss functions for different tasks, but here we will use categorical crossentropy loss:
+
+$$- \sum_{i=1}^c y_i log(\hat y_i)$$
+c - number of classes in data (3 in our case).
+Log returns 0 if $\hat y_i$ = 1, but when it's close to 0 (log of 0 is -$\infty$ ).
+We multiply by $y_i$ in order to multiply $-\infty$ by 0 (if our $y_i$ =0 and $\hat y_i$ =0 our model didn't make mistake, so we multiply it by 0), but when our prediction is some big negative number ($-\infty$ for example), meaning our model predicted 0, but $y=1$ we will add it to our loss. We have negative sign as $log$ in all these cases returns negative values.
+
+But what is cost function then?
+
+It's simply the sum of loss function outputs for all samples:
+
+$$J(w_0, w_1, ..., b_n) = {1 \over m} \sum^{m}_{i=1} L(y_i, \hat y_i)$$
+Okay, we get some feedback... What do we do next?
+Oh... We're closer to backprop...
+We need to tweak our parameters to make $J$ smaller.
+
+Experienced with math people understand that it is a problem of optimization where we minimize/maximize some function.
+The most popular algorithm in Machine Learning for parameters optimization is called
+**Gradient Descent**
+
+By far you may think that gradient is a mix of beautiful colors, but I'll change your mind...
+<br><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXZsC6D_I-pe_GEnklMlSlM_9jEkJYiu6tWQ&s" width=30%> <br>
+
+
+---
+
+## Backward Propagation
+<br>
+<img src="https://i.kym-cdn.com/photos/images/newsfeed/001/623/463/d90.jpg" width=21% ><br>
+Aw man... How many people broke their brains trying to understand it...
+Don't worry btw.
+
+Math again:
+
+If you are familiar with concept of derivative and can calculate the following derivative:
+
+$$f(x) = x^2$$
+$$f' - ?$$
+Feel free to skip this derivative introduction.
+Look at this beautiful function:<br>
+<img src="https://saylordotorg.github.io/text_intermediate-algebra/section_09/f7c27c7d79c9141d0731362a4554caa7.png" width=70%><br>
+This is a Quadratic Parabola.
+We know how it produces outputs, but here's an interesting question:
+```
+Can we describe how fast this function changes, and if we can
+How?
+```
+It may be confusing, but mathematicians came up with an Idea of Derivative!
+This beauty gives us number that represents how fast our function changes in particular point of graph.
+
+Algorithm is really simple
+Bear with me!
+1. Take some x value you are interested in and calculate y for it
+2. Add some tiny tiny value $\epsilon$ to your x
+3. Calculate y1 for your updated x
+
+$$slope = {{y1 - y} \over \epsilon}$$
+If you grasp the idea, by thinking deeper it's literally what it is!
