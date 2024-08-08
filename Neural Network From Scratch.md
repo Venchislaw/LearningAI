@@ -314,6 +314,7 @@ Don't worry btw.
 
 Math again:
 
+## Derivatives
 If you are familiar with concept of derivative and can calculate the following derivative:
 
 $$f(x) = x^2$$
@@ -338,3 +339,70 @@ Bear with me!
 
 $$slope = {{y1 - y} \over \epsilon}$$
 If you grasp the idea, by thinking deeper it's literally what it is!
+In complex functions with many variables we can find derivatives *with respect to some variable*
+
+for example:
+
+$${d \over da}2ac + 3b = 2c$$
+We simply "close" our eyes on parts of function where a is not used. We worry only about the part where a is multiplied by something.
+There are also many rules of derivation, but they're out of bounds of this tutorial.
+
+## Usage of Derivatives:
+
+With derivatives we literally by definition understand how change in variable affects result.
+You might have already understood how we'll use derivatives.
+
+$$dL \over dW$$
+$$dL \over db$$
+Our gradient is positive when it goes up and it's negative when we go downwards.<br>
+<img src="https://miro.medium.com/v2/resize:fit:1400/1*2aS_8T7-f5gkoE-3gA9JlA.png" width=60%>
+We need to move "right" when gradient is negative (this said we need to increase parameter if it's gradient is negative), otherwise move left(decrease parameter value).
+
+That would look like this:
+
+$$W = W - {dL \over dW}$$
+$$b = b - {dL \over db}$$
+But on practice such updates are too rapid and fast. We need some coefficient (multiplier) to slow down updates a little bit.
+So that said our update formula is defined as:
+
+$$W = W - a{dL \over dW}$$
+$$b = b - a{dL \over db}$$
+
+Where $a$ -*learning rate* (value [0, 1] that limits speed of updates)
+
+Now main question is how do we find $dL\over db$
+
+## Computation Graph
+
+Our neural networks may be pretty big and complex, so to ease computations of derivatives I need to introduce an Idea of **computation graph**.
+
+Imagine some function $f$ defined as:
+$$f(x, y, z) = x(2y+z)$$
+When plugging in some inputs and calculating output we do some ordered operations:
+1) a=2y
+2) b=a+z
+3) c=x*b
+
+Computation graph may look like this:
+<br>
+<img src="https://i.postimg.cc/VsSFHxtq/Screenshot-from-2024-08-08-16-00-07.png" width=60%>
+<br>
+From here we can calculate derivatives w.r.t some variable (w.r.t - with respect to)
+From this image we can also understand the idea of **Chain Rule**
+For example let's try calculating
+$$dc\over dz$$
+It may be confusing, but let's thing logically.
+We can split this problem on sub-problems.
+
+1) $dc\over db$
+2) $db \over dz$
+3) ${dc\over dz} = {dc\over db}{db\over dz}$
+4) Enjoy results!
+We find out how change in b affects c, and then calculate how much b depends on c.
+And we multiply it starting from the end!
+Ezy peezy!
+
+## Computation Graph of our Network
+
+<br>
+<img src="https://i.postimg.cc/Z5qnwSBZ/Screenshot-from-2024-08-08-16-14-05.png" width=100%>
