@@ -136,9 +136,48 @@ $$\theta_{t+1} = \theta_t - v_t$$
 Although it's just an approximation of "Step Ahead" it works pretty well and does a smarter job, speeding up training process.
 
 Here's an illustration [2] :
+<br>
 <img src="https://www.researchgate.net/publication/365820889/figure/fig3/AS:11431281103439668@1669691987354/Nesterov-momentum-first-makes-a-big-jump-in-the-direction-of-the-previously-accumulated.ppm" widht=30%>
+<br>
 
 While CM(classical momentum) makes a small jump in gradient(small blue vector) and makes a big jump in accumulated gradient vector(big blue vector), NAG(Nesterov accelerated gradient) makes a big jump in the direction of accumulated gradients vector (brown vector) and makes a correction (that is to say, adds up gradient at the step ahead).
 
+
+## AdaGrad
+
+Adagrad differs from Momentum-based optimizers described above, because instead of speeding up or slowing down gradient it changes learning rate ($\eta$) for each parameter.
+
+How does it do it? Let's find out!
+
+Steps of AdaGrad:
+
+1) Accumulate Squared gradients for each parameter:
+		$G_{ii} = \sum^T_{t=1}g_{ti}^2$ , where $g_{ti} = \nabla J(\theta_{ti})$
+		$G_{ii}$ - diagonal matrix of summed up squared gradients
+
+2) Update parameters with scaled learning rate.
+		$\theta_{t+1, i} = \theta_{ti} - {\eta \over \sqrt{G_{tii} + \epsilon}}g_{ti}$
+		Note: $\epsilon$ prevents division by zero.
+		We update out parameter by dividing our accumulated gradient at diagonal.
+		Square root prevents too rapid update.
+AdaGrad decreases learning rate on Steep Slopes and Increases it on moderate ones.
+That's a really simple idea behind AdaGrad, but despite the simplicity it's efficient.
+
+## RMSprop
+
+RMSprop was proposed by Geoffrey Hinton on his Coursera class and improved AdaGrad optimization algorithms. The main problem of Adagrad is **summation of all gradients through T iterations**. This summation decreased $\eta$ to really small values through $T$ iterations when $T$ was big enough.
+
+RMSprop uses moving average (we've already used it with CM and NAG).
+
+$$E[g^2]_t = \gamma E[g^2]_{t-1} + (1-\gamma)g^2_t$$
+$$\theta_{t+1} = \theta_t - {\eta \over \sqrt{E[g^2]_t + \epsilon}}g_t$$
+
+Moving average has a property of "forgetting", I mean it decreases past squared gradients when they were calculated long time ago. This property emphasizes recent updates, not the old ones.
+Geoffrey Hinton suggests value of $\gamma=0.9$ and $\eta=0.001$
+
+
+
+---
+
 [1] - Updates may be too noisy, because of tuning on one particular sample. Data samples may vary very much, what leads us to noisy optimization
-[2]-Illustration given by Geoffrey Hinton in his Coursera Class.
+[2]-Illustration given by Geoffrey Hinton on his Coursera Class.
