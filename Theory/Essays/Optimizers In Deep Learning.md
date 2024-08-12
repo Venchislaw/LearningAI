@@ -252,6 +252,28 @@ We don't need bias correction here for $v_t$, because we're taking maximum by us
 It's robust to outliers because of $u_t$ that picks maximum between previously accumulated gradients and current one.
 Outliers usually have big derivative values, so we will divide learning rate by big value (as max will pick big gradient), and update for outlier will be super small.
 
+## Nadam
+
+Nadam is an Adam algorithm with Nesterov Momentum instead of Momentum.
+However integration of Nesterov Momentum is harder than it may seem.
+It's too exhaustive to update gradient, calculate momentum with updated gradient and update parameters.
+
+Wrong Way:
+$$g_t = \nabla J(\theta_t - \gamma m_{t-1})$$
+$$m_t = \gamma m_{t-1} + (1-\gamma)\eta g_t$$
+$$\theta_{t+1} = \theta_t - m_t$$
+Instead, Author of Nadam updates it smarter.
+
+$$g_t = \nabla J(\theta_t)$$
+$$m_t = \gamma m_{t-1}+ (1-\gamma) \eta g_t$$
+$$\theta_{t+1} = \theta_t - (\gamma m_t + \eta g_t)$$
+
+Final Update rule:
+
+$$\theta_{t+1} = {\theta_t - \eta \over \sqrt{\hat v_t + e}}(\beta_1 \hat m_t + {(1 - \beta_1) g_t \over 1-\beta_1^t})$$
+I'll improve this explanation tomorrow!
+But, bye for now!
+
 ---
 
 [1] - Updates may be too noisy, because of tuning on one particular sample. Data samples may vary very much, what leads us to noisy optimization
