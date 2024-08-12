@@ -137,7 +137,7 @@ Although it's just an approximation of "Step Ahead" it works pretty well and doe
 
 Here's an illustration [2] :
 <br>
-<img src="https://www.researchgate.net/publication/365820889/figure/fig3/AS:11431281103439668@1669691987354/Nesterov-momentum-first-makes-a-big-jump-in-the-direction-of-the-previously-accumulated.ppm" widht=30%>
+<img src="https://www.ruder.io/content/images/2016/09/nesterov_update_vector.png" widht=30%>
 <br>
 
 While CM(classical momentum) makes a small jump in gradient(small blue vector) and makes a big jump in accumulated gradient vector(big blue vector), NAG(Nesterov accelerated gradient) makes a big jump in the direction of accumulated gradients vector (brown vector) and makes a correction (that is to say, adds up gradient at the step ahead).
@@ -175,6 +175,29 @@ $$\theta_{t+1} = \theta_t - {\eta \over \sqrt{E[g^2]_t + \epsilon}}g_t$$
 Moving average has a property of "forgetting", I mean it decreases past squared gradients when they were calculated long time ago. This property emphasizes recent updates, not the old ones.
 Geoffrey Hinton suggests value of $\gamma=0.9$ and $\eta=0.001$
 
+## AdaDelta
+
+This optimization algorithm improves idea on AdaGrad even further.
+It also uses Moving Average, but proposes new idea.
+Accumulation of Updates (deltas) through the moving average.
+Method proposes this because of the following problems:
+1) Units mismatch
+2) Scaling problem
+
+The update rule for AdaDelta:
+
+$$\Delta \theta_t = {RMS[\Delta\theta]_{t-1} \over RMS[g]_t}g_t$$
+$$\theta_{t+1} = \theta_t - \Delta\theta_t$$
+Accumulation of Deltas results in:
+1) Smarter scaling (our learning rate does not vanish)
+2) No need to specify $\eta$.
+
+The update rule with RMS expanded:
+
+$$\Delta \theta_t = {\sqrt{\sum^T_{t=1}\gamma E[\Delta\theta^2]_{t-1} + (1-\gamma) \Delta \theta^2_t + \epsilon}\over \sqrt{\sum^T_{t=1}\gamma E[g^2]_{t-1} + (1-\gamma) g^2_t}+\epsilon}$$
+$$\theta_{t+1} = \theta_t - \Delta \theta_t$$
+
+(I'm scared to see how it would look like on GitHub...)
 
 
 ---
