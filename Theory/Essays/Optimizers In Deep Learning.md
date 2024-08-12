@@ -198,7 +198,59 @@ $$\Delta \theta_t = {\sqrt{\sum^T_{t=1}\gamma E[\Delta\theta^2]_{t-1} + (1-\gamm
 $$\theta_{t+1} = \theta_t - \Delta \theta_t$$
 
 (I'm scared to see how it would look like on GitHub...)
+For github:
+<img src="https://quicklatex.com/cache3/0d/ql_b82fdb9325aa351562ad5240efe90d0d_l3.png" width=60%>
 
+
+
+## Adam
+
+Adam optimizer is the most popular optimizer in Deep Learning
+
+![[Pasted image 20240812150136.png]]
+
+This optimizer combines ideas from RMSprop and Momentum.
+It's super efficient and fast and that's cool.
+Adam consists 2 moments:
+1) mean
+2) uncentered variance
+
+Steps of Adam:
+1) compute 2 moments
+		$m_t = \beta_1 m_{t-1} + (1 - \gamma) g_t$
+		$v_t = \beta_2 v_{t-1} + (1-\gamma)g^2_t$
+
+2) Bias correction.
+		This step is crucial in Adam optimizer.
+		Why?
+		We initialize our $m$ and $v$ to 0s, so first values of them will be biased around 0.
+		To prevent it we increase their value.
+		$\hat m_t = {m_t \over 1-\beta_1^t}$
+		$\hat v_t = {v_t \over 1-\beta_2^t}$
+		This step is crucial. On first iterations when our $t$ is not big we'll have $\beta_1^t=0.9^t$ where $t$ is not really big (Adam creators recommend $\beta_1 = 0.9$ and $\beta_2 = 0.999$)
+		When t is small (from 1 to 5 etc.) we divide our moment by small number increasing it it. However when t is large (100 etc.) We will divide by 1(approximately).
+3) Update parameters.
+		$\theta_{t+1} = \theta_t - {\eta \over \sqrt{\hat v_t + \epsilon}} \hat m_t$
+
+Let's be honest. Ezy Pezy, but Bias Correction may be confusing for some viewers, so here's an Andrew Ng's explanation, which is part of the Deep Learning Specialization:
+
+[Bias Correction of Exponentially Weighted Averages (C2W2L05)](https://www.youtube.com/watch?v=lWzo8CajF5s)
+
+## Adamax
+This is an extension to the original Adam optimization algorithms, which is robust to outliers.
+**Outliers** - samples of dataset that differ very much from average sample in dataset. (this is my interpretation of it)
+Adamax proposes $l_{\infty}$ norm instead of $l_2$ norm.
+Let's clarify the meaning:
+
+$l_2$ - Euclidean distance (square root of sum of squares)
+$l_{\infty}$ - Max value in vector.
+
+Update rule for this Algorithm:
+$$u_t = max(\beta_2 \cdot v_{t-1}, |g_t|)$$
+$$\theta_{t+1} = \theta_t - {\eta \over u_t} \hat m_t$$
+We don't need bias correction here for $v_t$, because we're taking maximum by using $l_{\infty}$ norm.
+It's robust to outliers because of $u_t$ that picks maximum between previously accumulated gradients and current one.
+Outliers usually have big derivative values, so we will divide learning rate by big value (as max will pick big gradient), and update for outlier will be super small.
 
 ---
 
