@@ -106,6 +106,8 @@ $$\theta_{t+1} = \theta_t - v_t$$
 This method dampens useless oscillations that may occur with really thin and wide bowl-shaped function. (For example it may happen when we do not normalize our input features).
 <br>
 <img src="https://production-media.paperswithcode.com/methods/Screen_Shot_2020-05-28_at_3.25.40_PM_Y687HvA.png" width=70%>
+
+Also this method helps resolves problem of Local Optimas as our "ball" that rolls down has some accumulated velocity that can help to jump out of local optima.
 <br>
 It does it by reducing velocity on axis with a lot of updates in opposite directions.
 When Climbing upwards we increase $v_t$ and as a result decrease parameter faster.
@@ -124,5 +126,19 @@ Hmmm... But where is the $(1-\gamma)$ term?
 With such formulas it's already included to $\eta$
 $$\eta = lr(1-\gamma)$$
 
+## Nesterov Accelerated Gradient
+
+Soviet mathematician Yurii Nesterov improved Classical Momentum proposed by Polyak.
+Instead of calculating gradient at the current step Nesterov proposed calculating it at the step ahead:
+
+$$v_t = \gamma v_{t-1} - (1-\gamma)\nabla J(\theta_t - \gamma v_{t-1})$$
+$$\theta_{t+1} = \theta_t - v_t$$
+Although it's just an approximation of "Step Ahead" it works pretty well and does a smarter job, speeding up training process.
+
+Here's an illustration [2] :
+<img src="https://www.researchgate.net/publication/365820889/figure/fig3/AS:11431281103439668@1669691987354/Nesterov-momentum-first-makes-a-big-jump-in-the-direction-of-the-previously-accumulated.ppm" widht=30%>
+
+While CM(classical momentum) makes a small jump in gradient(small blue vector) and makes a big jump in accumulated gradient vector(big blue vector), NAG(Nesterov accelerated gradient) makes a big jump in the direction of accumulated gradients vector (brown vector) and makes a correction (that is to say, adds up gradient at the step ahead).
 
 [1] - Updates may be too noisy, because of tuning on one particular sample. Data samples may vary very much, what leads us to noisy optimization
+[2]-Illustration given by Geoffrey Hinton in his Coursera Class.
