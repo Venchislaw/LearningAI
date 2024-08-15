@@ -16,13 +16,13 @@ Article structure:
 	- Adam
 	- Adamax
 	- Nadam
-- Conclusion\
+- Conclusion
 
 Enjoy!
 
 ---
 
-Parameter tuning based on the Loss Function results is the key part of Deep Learning that gives our models ability to learn. Picking a good optimizer can be really tricky process full of confusion, so this article will describe all main optimizers in Deep Learning. This article was inspired by the following paper: [An overview of gradient descent optimization algorithms - Sebastian Ruder](https://arxiv.org/pdf/1609.04747), however in this article I try to cover topic wider, introducing all formulas and their effects.
+Parameter tuning based on the Loss Function results is the key part of Deep Learning that gives our models ability to learn. Picking a good optimizer can be a really tricky process full of confusion, so this article will describe all main optimizers in Deep Learning. This article was inspired by the following paper: [An overview of gradient descent optimization algorithms - Sebastian Ruder](https://arxiv.org/pdf/1609.04747), however in this article I try to cover the topic wider, introducing all formulas and their effects.
 
 
 
@@ -268,9 +268,24 @@ $$g_t = \nabla J(\theta_t)$$
 $$m_t = \gamma m_{t-1}+ (1-\gamma) \eta g_t$$
 $$\theta_{t+1} = \theta_t - (\gamma m_t + \eta g_t)$$
 
+Note, In original momentum our update is:
+$$\theta_{t+1} = \theta_t - (\gamma m_{t-1} + \eta g_t)$$
+because $$m_t = \gamma m_{t-1} + \eta g_t$$
+We're using $\gamma m_{t-1}$ here, while Dozat's update uses $\gamma m_t$.
+That is to say that Nadam uses gradients accumulated till this moment with current gradient.
+It gives us an approximation of this "step ahead".
+
+Integrating it into Adam we get the following equation:
+
+
+
 Final Update rule:
 
-$$\theta_{t+1} = {\theta_t - \eta \over \sqrt{\hat v_t + e}}(\beta_1 \hat m_t + {(1 - \beta_1) g_t \over 1-\beta_1^t})$$
+$$\theta_{t+1} = \theta_t - {\eta \over \sqrt{\hat v_t + e}}({\beta_1m_t \over1-\beta_1^t} + {(1 - \beta_1) g_t \over 1-\beta_1^t})$$
+
+However we can simplify it, because $\beta_1m_{t} \over1-\beta_1^t$ is bias-corrected 
+
+$$\theta_{t+1} = \theta_t - {\eta \over \sqrt{\hat v_t + e}}(\beta_1 \hat m_t + {(1 - \beta_1) g_t \over 1-\beta_1^t})$$
 I'll improve this explanation tomorrow!
 But, bye for now!
 
