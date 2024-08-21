@@ -83,3 +83,37 @@ In this way we can do the following when building CNN:
 - Specify padding by hand
 - Use valid convolution ($p=0$)
 - Use same convolution ($p = {f-1\over2}$)
+
+### Strides
+
+<br>
+<img src="https://miro.medium.com/v2/resize:fit:588/1*BMngs93_rm2_BpJFH2mS0Q.gif" width=30%>
+<br>
+In all previous examples we took step of 1, but we can specify stepsize (stride) to some other value. 
+Formula for the image size:
+
+$${n + 2p - f \over s}+1$$
+Note that $p$ can be 0.
+
+In case $n+2p-f \over s$ is not an integer, we should round it down (floor).
+Uh, oh... That's it here.
+
+### Convolutions on volume.
+
+In real life we thankfully see our world in colors. Colorful images are represented as 3D matrices. Example shape:
+$$(256, 256, 3)$$ That said, we can't use our ordinary 2D kernel anymore. Instead we have to turn it 3D.
+Example shape:
+$$(3, 3, 3)$$
+The rest of an algorithm is identical. Our cubic kernel slides across an entire image and produces a 2D output...
+<br>
+<img src="https://miro.medium.com/v2/resize:fit:1400/1*hGyDx8VKYPnJqIoCidLzFw.gif" width=50%>
+<br>
+This may sound like a problem, but who said than we can use only 1 filter?
+Why don't we use 2, 3, 10, 999 and stack them together?
+In case of $x$ filters for this image and for 3x3 filter we will have output of:
+$$(4, 4, x)$$
+That's not a even a problem anymore.
+Actually it's a huge W!
+$x$ is a number of features we're detecting (vertical edges, horizontal edges etc.)
+Convolutions over volume are even COOLER!
+
