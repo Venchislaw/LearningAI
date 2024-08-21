@@ -117,3 +117,59 @@ Actually it's a huge W!
 $x$ is a number of features we're detecting (vertical edges, horizontal edges etc.)
 Convolutions over volume are even COOLER!
 
+## Layer of Convolutional Neural Network
+
+In Multi-layer perceptron we had the following layer structure:
+$$z^{[1]} = W^{[1]}a^{[0]} + b^{[1]}$$
+$$a^{[1]} = g(z^{[1]})$$
+
+In convolutional neural network we do the following:
+1) $n$ filters filled with our learnable parameters ($w$)
+2) Add bias $b$ to every value of the output (after applying kernel)
+3) Activate This output (ReLU etc.)
+4) Stack activated outputs
+
+Here's what it does:
+
+![[Pasted image 20240821172817.png]]
+
+Here's an analogy:
+
+![[Pasted image 20240821173030.png]]
+
+#### Notations
+Oh blyat... (Oh man...)
+
+$f^{[l]}$ - filter size at layer $l$
+$p^{[l]}$ - padding at layer $l$
+$s^{[l]}$ - stride at layer $l$
+$n_c^{[l]}$ - number of filters
+
+Input:
+$n_H^{[l-1]} \times n_W^{[l-1]} \times n^{[l-1]}_c$, where $n_c^{[l-1]}$ - number of channels, $H$ and $W$ - height and width, respectively.
+
+Output:
+$n_H^{[l]} \times n_W^{[l]} \times n_c^{[l]}$, where:
+
+$n^{[l]}_H = floor({n_H^{[l-1]} + 2p^{[l]} - f^{[l]} \over s^{[l]}} + 1)$
+$n^{[l]}_W = floor({n_W^{[l-1]} + 2p^{[l]} - f^{[l]} \over s^{[l]}} + 1)$
+
+Each filter is $f^{[l]} \times f^{[l]} \times n_c^{[l-1]}$
+number of channels in filter must match number of channels in input.
+Activations:
+$a^{[l]} -> n_H^{[l]} \times n_W^{[l]} \times n_c^{[l]}$
+$A^{[l]} -> m \times n_H^{[l]} \times n_W^{[l]} \times n_c^{[l]}$
+
+Weights:
+$f^{[l]} \times f^{[l]} \times n_c^{[l-1]} \times n_c^{[l]}$
+(reminder: $n_c^{[l]}$ - number of filters in this layer, while $n_c^{[l-1]}$ - number of filters in the previous layer output passed as input to this layer)
+
+Bias:
+$n_c^{[l]}$, but in code it's better to use $(1, 1, 1, n_c^{[l]})$ shape.
+
+
+<br>
+<img src="https://media.tenor.com/izxw0H5mkAQAAAAi/meme-realisation.gif" width=5%><img src="https://media.tenor.com/izxw0H5mkAQAAAAi/meme-realisation.gif" width=5%><img src="https://media.tenor.com/izxw0H5mkAQAAAAi/meme-realisation.gif" width=5%><img src="https://media.tenor.com/izxw0H5mkAQAAAAi/meme-realisation.gif" width=5%><img src="https://media.tenor.com/izxw0H5mkAQAAAAi/meme-realisation.gif" width=5%><img src="https://media.tenor.com/izxw0H5mkAQAAAAi/meme-realisation.gif" width=5%>
+
+
+<br>
